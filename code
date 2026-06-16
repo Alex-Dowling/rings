@@ -1,0 +1,84 @@
+import time
+import os
+
+
+class Ring: #creates rings with colors and art
+    colors = {
+
+
+        "blue":  "\033[94m       |--BLUE--|   \033[0m",
+        "green": "\033[92m      |---GREEN---|  \033[0m",
+        "yellow":"\033[93m    |----YELLOW----| \033[0m",
+        "orange":"\033[38;2;255;105;0m  |------ORANGE------|\033[0m",
+        "red": "\033[91m|----------RED----------|\033[0m"
+    }
+   
+    def __init__(self, color): #makes the separate colors to choose from
+        self.color = color  
+        self.art = self.colors.get(color, "unknown")  
+        self.onStack = False  
+
+
+ring1 = Ring("red")
+ring2 = Ring("orange")
+ring3 = Ring("yellow")
+ring4 = Ring("green")
+ring5 = Ring("blue")
+
+
+ringStack = []
+
+
+def push(ring): #function to add rings to the stack
+    if not ring.onStack:  
+        ringStack.append(ring)
+        ring.onStack = True
+        print(f"Pushed {ring.color}: {[r.color for r in ringStack]}")
+
+
+def pop(): #function to remove rings from the stack
+    if ringStack:
+        removedRing = ringStack.pop()
+        removedRing.onStack = False
+        print(f"Popped {removedRing.color}: {[r.color for r in ringStack]}")
+    else:
+        print("Stack is empty!")
+        time.sleep(1.25)
+
+
+def userChoice(): #function for running all the code in a loop
+    while True:
+        os.system('cls')
+        for r in reversed(ringStack): # displays the stack
+            print(r.art)
+
+
+        availableColors = [ring.color for ring in [ring1, ring2, ring3, ring4, ring5] if not ring.onStack] # checks available colors
+        print("\nAvailable colors:", ", ".join(availableColors))
+        print("1. Add a ring to the top")
+        print("2. Remove topmost ring")
+        print("3. Exit")
+       
+        userInput = input("Choose an option: ")
+       
+        if userInput == "1":
+            color = input("What color would you like to add?: ").lower()
+           
+            if color in availableColors:
+                newRing = next(ring for ring in [ring1, ring2, ring3, ring4, ring5] if ring.color == color) # creates a new ring with the color to add
+                push(newRing)
+            else:
+                print("Invalid color. Please choose from the available colors.")
+                time.sleep(1.25)
+       
+        elif userInput == "2":
+            pop()
+       
+        elif userInput == "3":
+            break  
+       
+        else:
+            print("Invalid option. Please select a valid option.") #makes sure user inputs a valid option
+            time.sleep(1.25)
+userChoice()
+
